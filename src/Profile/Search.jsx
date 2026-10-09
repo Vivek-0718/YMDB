@@ -52,7 +52,24 @@ function Search() {
     <>
       <div className="flex justify-center w-full">
         <div className="flex w-full items-center gap-3 rounded-full bg-[#293541] px-4 py-2 text-[#9ab]">
-          <span className="text-xl">⌕</span>
+          <span className="text-xl">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="20"
+              height="20"
+              viewBox="0 0 24 24"
+            >
+              <g
+                fill="none"
+                stroke="currentColor"
+                strokeLinejoin="round"
+                strokeWidth="1.5"
+              >
+                <path strokeLinecap="round" d="M17.5 17.5L22 22" />
+                <path d="M20 11a9 9 0 1 0-18 0a9 9 0 0 0 18 0Z" />
+              </g>
+            </svg>
+          </span>
           <input
             type="text"
             placeholder="Search films..."

@@ -5,6 +5,7 @@ import Watchlist from "./Pages/Watchlist";
 import { Provider } from "react-redux";
 import { store } from "./store";
 import Home from "./Profile/Home";
+import MovieModal from "./Pages/MovieModal";
 
 function App() {
   return (
@@ -20,6 +21,7 @@ function App() {
             />
             <Route path="watchlist" element={<Watchlist></Watchlist>} />
           </Routes>
+          <MovieModal/>
         </BrowserRouter>
       </Provider>
     </>
