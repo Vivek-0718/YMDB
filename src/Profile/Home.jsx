@@ -1,5 +1,7 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
+import MovieSearch from "./MovieSearch";
+
 
 function Home() {
   const [selectedMovie, setSelectedMovie] = useState(null);
@@ -119,19 +121,7 @@ function Home() {
           <span className="text-[#9ab]"></span>
         </div>
 
-        {/* Search */}
-        <div className="mx-4 flex flex-1 justify-center">
-          <div className="flex w-full max-w-md items-center gap-3 rounded-full bg-[#293541] px-4 py-2 text-[#9ab]">
-            <span className="text-xl">⌕</span>
-
-            <input
-              type="text"
-              placeholder="Search films, members..."
-              className="w-full bg-transparent text-sm text-white outline-none placeholder:text-[#9ab]"
-            />
-          </div>
-        </div>
-
+        <MovieSearch></MovieSearch>
         {/* Navigation */}
         <nav className="flex shrink-0 flex-wrap items-center gap-6 text-sm font-bold text-[#9ab]">
           <Link
@@ -141,17 +131,11 @@ function Home() {
             RECENT ACTIVITY
           </Link>
 
-          <Link
-            to="/watchlist"
-            className="whitespace-nowrap hover:text-white"
-          >
+          <Link to="/watchlist" className="whitespace-nowrap hover:text-white">
             WATCHLIST
           </Link>
 
-          <Link
-            to="/favourites"
-            className="whitespace-nowrap hover:text-white"
-          >
+          <Link to="/favourites" className="whitespace-nowrap hover:text-white">
             FAVOURITES
           </Link>
         </nav>
@@ -205,9 +189,7 @@ function Home() {
                     {movie.title}
                   </button>
 
-                  <p className="text-sm text-[#678]">
-                    Watched on {movie.date}
-                  </p>
+                  <p className="text-sm text-[#678]">Watched on {movie.date}</p>
 
                   <div className="text-lg tracking-wider text-[#00c030]">
                     {movie.rating}

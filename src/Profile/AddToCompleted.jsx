@@ -1,7 +1,7 @@
 import { useDispatch, useSelector } from "react-redux";
 import { addToCompleted, getCompleted } from "../profileSlice";
 
-function SearchBar() {
+function AddToCompleted() {
   const dispatch = useDispatch();
   const completedMovies = useSelector(getCompleted);
   return (
@@ -19,4 +19,4 @@ function SearchBar() {
   );
 }
 
-export default SearchBar;
+export default AddToCompleted;
