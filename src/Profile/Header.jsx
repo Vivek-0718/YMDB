@@ -51,7 +51,7 @@ function Header() {
             sathish26
           </span>
 
-          <span className="text-[#9ab]">⌄</span>
+          <span className="text-[#9ab]"></span>
         </div>
 
         {/* Search */}
@@ -100,7 +100,7 @@ function Header() {
             </button>
           </div>
 
-          {/* Five Movie Rows */}
+          {/* Movies  */}
           <div className="flex flex-col">
             {movies.map((movie) => (
               <div
