@@ -1,6 +1,10 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
+<<<<<<< HEAD
 import Navbar from "./Navbar";
+=======
+import MovieSearch from "./MovieSearch";
+>>>>>>> b261483816db642f9f103f43e15d67e2546142bb
 
 
 function Home() {
