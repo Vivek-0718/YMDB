@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
 
-function Header() {
+function Home() {
   const [selectedMovie, setSelectedMovie] = useState(null);
   const [watchlist, setWatchlist] = useState([]);
   const [likedMovies, setLikedMovies] = useState([]);
@@ -366,4 +366,4 @@ function Header() {
   );
 }
 
-export default Header;
+export default Home;

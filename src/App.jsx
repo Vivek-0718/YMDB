@@ -4,7 +4,7 @@ import RecentActivity from "./Pages/RecentActivity";
 import Watchlist from "./Pages/Watchlist";
 import { Provider } from "react-redux";
 import { store } from "./store";
-import Home from "./Pages/Home";
+import Home from "./Profile/Home";
 
 function App() {
   return (
