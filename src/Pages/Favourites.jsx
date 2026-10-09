@@ -1,7 +1,12 @@
+import Navbar from "../Profile/Navbar"
+
 function Favourites() {
     return (
         <>
-          this is favour  
+        <Navbar></Navbar>
+          <div className="p-6 text-white">
+        <h1 className="text-2xl font-bold">Favourites</h1>
+      </div> 
         </>
     )
 }
