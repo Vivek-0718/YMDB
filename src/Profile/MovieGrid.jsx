@@ -33,7 +33,6 @@ function MovieGrid({ type }) {
       if (!res.ok) throw new Error("Network error. Please try again later");
 
       const data = await res.json();
-      console.log(data);
       if (data.Response === "False")
         throw new Error(data.Error || "Movie not found");
       dispatch(selectSearch(data));
