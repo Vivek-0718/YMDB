@@ -31,7 +31,7 @@ function SearchResults() {
 
       dispatch(selectSearch(data));
       dispatch(openModal({ type: "movieDetails" }));
-      // dispatch(setOnSearch([]));
+
     } catch (e) {
       dispatch(setError(e.message));
     } finally {

@@ -6,6 +6,7 @@ import { Provider } from "react-redux";
 import { store } from "./store";
 import Home from "./Profile/Home";
 import MovieModal from "./Pages/MovieModal";
+import HomeDisplay from "./Profile/HomeDisplay";
 
 function App() {
   return (
@@ -13,15 +14,14 @@ function App() {
       <Provider store={store}>
         <BrowserRouter>
           <Routes>
-            <Route path="/" element={<Home></Home>}></Route>
-            <Route path="favourites" element={<Favourites></Favourites>} />
-            <Route
-              path="recentactivity"
-              element={<RecentActivity></RecentActivity>}
-            />
-            <Route path="watchlist" element={<Watchlist></Watchlist>} />
+            <Route path="/" element={<Home />}>
+              <Route index element={<HomeDisplay />} />
+              <Route path="favourites" element={<Favourites />} />
+              <Route path="recentactivity" element={<RecentActivity />} />
+              <Route path="watchlist" element={<Watchlist />} />
+            </Route>
           </Routes>
-          <MovieModal/>
+          <MovieModal />
         </BrowserRouter>
       </Provider>
     </>

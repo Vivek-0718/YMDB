@@ -2,14 +2,11 @@ import { useDispatch, useSelector } from "react-redux";
 import {
   toggleFavorite,
   toggleWatchlist,
-  setUserRating,
-  saveUserRating,
-  addToCompleted,
+  rateAndComplete,
   closeModal,
   getFavorites,
   getWatchlist,
   getUserRatings,
-  getSavedRatings,
   getSelectedmovie,
 } from "./../profileSlice";
 
@@ -22,28 +19,26 @@ function MovieModal() {
   const favorites = useSelector(getFavorites);
   const watchlist = useSelector(getWatchlist);
   const userRatings = useSelector(getUserRatings);
-  const savedRatings = useSelector(getSavedRatings);
 
   const onClose = () => dispatch(closeModal());
 
   if (!isOpen || !selectedMovie) return null;
 
-  // Support both your static movie objects and API movie objects.
-  const movieId = selectedMovie.imdbID || selectedMovie.title || selectedMovie.Title;
-  const title = selectedMovie.title || selectedMovie.Title;
-  const image = selectedMovie.image || selectedMovie.Poster;
-  const year = selectedMovie.year || selectedMovie.Year;
-  const director = selectedMovie.director || selectedMovie.Director;
-  const duration = selectedMovie.duration || selectedMovie.Runtime;
-  const genres = selectedMovie.genres || selectedMovie.Genre;
-  const description = selectedMovie.description || selectedMovie.Plot;
+  const movieId = selectedMovie.imdbID;
+  const title = selectedMovie.Title;
+  const image = selectedMovie.Poster;
+  const year = selectedMovie.Year;
+  const director = selectedMovie.Director;
+  const duration = selectedMovie.Runtime;
+  const genres = selectedMovie.Genre;
+  const description = selectedMovie.Plot;
 
   const isFavorite = favorites.some(
-    (movie) => (movie.imdbID || movie.title || movie.Title) === movieId,
+    (movie) => movie.imdbID === movieId,
   );
 
   const isInWatchlist = watchlist.some(
-    (movie) => (movie.imdbID || movie.title || movie.Title) === movieId,
+    (movie) => movie.imdbID === movieId,
   );
 
   const playTrailer = () => {
@@ -57,20 +52,7 @@ function MovieModal() {
   };
 
   const handleRating = (rating) => {
-    dispatch(setUserRating({ movieId, rating }));
-  };
-
-  const handleSaveRating = () => {
-    dispatch(
-      saveUserRating({
-        movieId,
-        rating: userRatings[movieId],
-      }),
-    );
-  };
-
-  const handleMarkWatched = () => {
-    dispatch(addToCompleted(selectedMovie));
+    dispatch(rateAndComplete({ selectedMovie, rating }));
   };
 
   return (
@@ -95,45 +77,36 @@ function MovieModal() {
         </button>
 
         <div className="grid grid-cols-1 items-start gap-5 pt-8 sm:grid-cols-[minmax(0,190px)_minmax(0,1fr)] sm:gap-6 sm:pt-2">
-          {/* Left: Poster and movie actions */}
           <section className="w-full min-w-0 sm:max-w-[190px]">
-            <div className="group relative overflow-hidden rounded-lg">
+            <div className="group relative overflow-hidden rounded-lg hover:[&>button]:flex">
               <img
                 src={image}
                 alt={`${title} poster`}
-                className="aspect-[2/3] max-h-[34vh] w-full object-cover"
+                className="max-h-[47vh] w-full object-contain"
               />
 
               <button
                 type="button"
                 onClick={playTrailer}
-                className="absolute inset-0 flex flex-col items-center justify-center gap-2 bg-black/35 text-white hover:bg-black/50"
+                className="absolute cursor-pointer inset-0 hidden flex-col items-center justify-center gap-2 bg-black/35 text-white hover:bg-black/50"
               >
                 <span className="flex h-14 w-14 items-center justify-center rounded-full bg-white text-2xl text-black">
-                  ▶
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="24"
+                    height="24"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      fill="currentColor"
+                      d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10s10-4.48 10-10S17.52 2 12 2M9.5 16.5v-9l7 4.5z"
+                    />
+                  </svg>
                 </span>
                 <span className="font-semibold">Play Trailer</span>
               </button>
             </div>
 
-            <div className="mt-2 rounded-lg border border-white/10 bg-[#20262c] p-2.5">
-              <p className="text-xs font-semibold uppercase tracking-wider text-gray-400">
-                Movie rating
-              </p>
-
-              <div className="mt-1 flex items-center gap-2">
-                <span className="text-lg tracking-wide text-amber-400">
-                  ★★★★★
-                </span>
-                <span className="text-sm text-gray-300">5.0/5</span>
-              </div>
-
-              <p className="mt-1 text-xs text-gray-500">
-                Sample display rating
-              </p>
-            </div>
-
-            {/* User rating */}
             <div className="mt-2 rounded-lg border border-white/10 bg-[#20262c] p-2.5">
               <p className="text-sm font-semibold">Your rating</p>
 
@@ -164,36 +137,16 @@ function MovieModal() {
                   </button>
                 ))}
               </div>
-
-              {userRatings[movieId] && (
-                <button
-                  type="button"
-                  onClick={handleSaveRating}
-                  className="mt-2 w-full rounded-md bg-amber-400 px-3 py-1.5 text-sm font-bold text-black hover:bg-amber-300"
-                >
-                  {savedRatings[movieId] !== undefined
-                    ? "Update Rating"
-                    : "Save Rating"}
-                </button>
-              )}
-
-              {savedRatings[movieId] !== undefined && (
-                <p className="mt-2 text-xs text-green-400">
-                  Saved: {savedRatings[movieId]} / 5 stars
-                </p>
-              )}
             </div>
 
-            {/* Watchlist */}
             <button
               type="button"
-              onClick={() => dispatch(toggleWatchlist(selectedMovie.imdbID))}
+              onClick={() => dispatch(toggleWatchlist(selectedMovie))}
               className="mt-2 w-full rounded-md border border-white/25 px-3 py-2 text-sm font-semibold hover:bg-white/10"
             >
               {isInWatchlist ? "✓ Added to Watchlist" : "+ Add to Watchlist"}
             </button>
 
-            {/* Favorites */}
             <button
               type="button"
               onClick={() => dispatch(toggleFavorite(selectedMovie))}
@@ -201,21 +154,11 @@ function MovieModal() {
             >
               {isFavorite ? "♥ Remove Favorite" : "♡ Add to Favorites"}
             </button>
-
-            {/* Completed movies */}
-            <button
-              type="button"
-              onClick={handleMarkWatched}
-              className="mt-2 w-full rounded-md bg-green-600 px-3 py-2 text-sm font-semibold hover:bg-green-500"
-            >
-              ✓ Mark as Watched
-            </button>
           </section>
 
-          {/* Right: Movie details */}
           <section className="min-w-0 sm:pt-8">
             <p className="mb-1 text-xs font-bold uppercase tracking-[0.22em] text-amber-400">
-              Featured movie
+              Movie
             </p>
 
             <h2 className="text-3xl font-extrabold leading-tight sm:text-4xl">
@@ -246,7 +189,7 @@ function MovieModal() {
 
             <div className="mt-4">
               <h3 className="text-sm font-semibold uppercase tracking-wider text-gray-400">
-                Synopsis
+                Plot
               </h3>
 
               <p className="mt-2 max-w-2xl text-sm leading-6 text-gray-200">

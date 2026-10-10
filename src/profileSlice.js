@@ -9,7 +9,6 @@ const initialState = {
   error: "",
   selectedMovie: {},
   userRatings: {},
-  savedRatings: {},
 
   modal: {
     isOpen: false,
@@ -45,20 +44,16 @@ const profileSlice = createSlice({
       const movie = action.payload;
       const movieId = movie.imdbID;
 
-      const runtime = Number.parseInt(
-        String(movie.Runtime || "").match(/\d+/)?.[0] || 0,
-        10,
-      );
-
       state.selectedMovie = {
         imdbID: movie.imdbID,
         Title: movie.Title,
         Year: movie.Year,
         Poster: movie.Poster,
-        runtime,
+        runtime: movie.Runtime,
         imdbRating: movie.imdbRating || "",
-        userRating: state.savedRatings[movieId] || 0,
+        userRating: state.userRatings[movieId] || 0,
         isFav: state.fav.some((item) => item.imdbID === movieId),
+        Plot: movie.Plot,
         isInWatchlist: state.watchlist.some((item) => item.imdbID === movieId),
       };
     },
@@ -66,10 +61,10 @@ const profileSlice = createSlice({
     openModal: (state, action) => {
       state.modal.isOpen = true;
       state.modal.type = action.payload.type;
-      state.modal.props = action.payload.props || {};
     },
     closeModal: (state) => {
       state.modal = { isOpen: false, type: null, props: {} };
+      state.selectedMovie = {};
     },
 
     toggleFavorite(state, action) {
@@ -80,56 +75,42 @@ const profileSlice = createSlice({
 
       state.fav = exists
         ? state.fav.filter((item) => item.imdbID !== movieId)
-        : [...state.fav, movie];
+        : [...state.fav, { ...movie, isFav: true }];
+      state.selectedMovie.isFav = !exists;
     },
 
     toggleWatchlist(state, action) {
-      const movieId = action.payload;
-
-      const exists = state.watchlist.some((item) => item.imdbID === movieId);
-
-      if (exists) {
-        state.watchlist = state.watchlist.filter(
-          (item) => item.imdbID !== movieId,
-        );
-        state.selectedMovie.isInWatchlist = false;
-      } else {
-        state.watchlist = [...state.watchlist, movieId];
-        state.selectedMovie.isInWatchlist = true;
-      }
-    },
-
-    setUserRating(state, action) {
-      const { movieId, rating } = action.payload;
-      state.userRatings[movieId] = rating;
-    },
-
-    saveUserRating(state, action) {
-      const { movieId, rating } = action.payload;
-      state.savedRatings[movieId] = rating;
-    },
-
-    addToCompleted(state, action) {
       const movie = action.payload;
       const movieId = movie.imdbID;
 
-      const exists = state.completed.some((item) => item.imdbID === movieId);
+      const exists = state.watchlist.some((item) => item.imdbID === movieId);
 
-      if (exists) return;
+       state.watchlist = exists
+         ? state.watchlist.filter((item) => item.imdbID !== movieId)
+         : [...state.watchlist, { ...movie, isInWatchlist: true }];
+       state.selectedMovie.isInWatchlist = !exists;
+    },
 
-      const runtime = Number.parseInt(
-        String(movie.Runtime || movie.runtime || "").match(/\d+/)?.[0] || 0,
-        10,
-      );
+    rateAndComplete(state, action) {
+      const { selectedMovie, rating } = action.payload;
+      const movieId = selectedMovie.imdbID;
+
+      state.userRatings[movieId] = rating;
+
+      const existing = state.completed.find((item) => item.imdbID === movieId);
+      if (existing) {
+        existing.userRating = rating;
+        return;
+      }
 
       state.completed.push({
-        imdbID: movie.imdbID,
-        Title: movie.Title,
-        Year: movie.Year,
-        Poster: movie.Poster,
-        runtime,
-        imdbRating: movie.imdbRating || "",
-        userRating: state.savedRatings[movieId] || 0,
+        imdbID: movieId,
+        Title: selectedMovie.Title,
+        Year: selectedMovie.Year,
+        Poster: selectedMovie.Poster,
+        runtime: selectedMovie.Runtime,
+        imdbRating: selectedMovie.imdbRating || "",
+        userRating: rating,
         isFav: state.fav.some((item) => item.imdbID === movieId),
         isInWatchlist: state.watchlist.some((item) => item.imdbID === movieId),
       });
@@ -147,9 +128,7 @@ export const {
   selectSearch,
   toggleFavorite,
   toggleWatchlist,
-  setUserRating,
-  saveUserRating,
-  addToCompleted,
+  rateAndComplete,
   openModal,
   closeModal,
 } = profileSlice.actions;
@@ -160,5 +139,5 @@ export const getLoading = (state) => state.profile.loading;
 export const getError = (state) => state.profile.error;
 export const getFavorites = (state) => state.profile.fav;
 export const getWatchlist = (state) => state.profile.watchlist;
+export const getCompleted = (state) => state.profile.completed;
 export const getUserRatings = (state) => state.profile.userRatings;
-export const getSavedRatings = (state) => state.profile.savedRatings;

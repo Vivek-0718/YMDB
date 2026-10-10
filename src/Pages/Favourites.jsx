@@ -1,14 +1,14 @@
-import Navbar from "../Profile/Navbar"
+import MovieGrid from "../Profile/MovieGrid";
 
 function Favourites() {
-    return (
-        <>
-        <Navbar></Navbar>
-          <div className="p-6 text-white">
-        <h1 className="text-2xl font-bold">Favourites</h1>
-      </div> 
-        </>
-    )
+  return (
+    <>
+      <div className="text-white max-w-[1000px]">
+        <h1 className="text-2xl mb-4 font-bold">My Favourites</h1>
+        <MovieGrid></MovieGrid>
+      </div>
+    </>
+  );
 }
 
-export default Favourites
+export default Favourites;
