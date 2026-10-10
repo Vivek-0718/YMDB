@@ -1,6 +1,6 @@
 import { useDispatch, useSelector } from "react-redux";
 import { useLocation } from "react-router-dom";
-import { getCompleted, getFavorites, getWatchlist, openModal, selectSearch, setLoading, startLoading } from "../profileSlice";
+import { getCompleted, getFavorites, getWatchlist, openModal, selectSearch, setLoading } from "../profileSlice";
 
 function MovieGrid({ type }) {
   const apiKey = import.meta.env.VITE_MY_KEY;
@@ -14,9 +14,9 @@ function MovieGrid({ type }) {
   let movies = null;
   if (pathname == "/") {
     if (type == "recentactivity") {
-      movies = completedMovies;
+      movies = completedMovies.slice(0, 5);
     } else if (type == "fav5") {
-      movies = favMovies;
+      movies = favMovies.slice(0, 5);
     }
   } else if (pathname == "/favourites") {
     movies = favMovies;
@@ -36,6 +36,7 @@ function MovieGrid({ type }) {
       console.log(data);
       if (data.Response === "False")
         throw new Error(data.Error || "Movie not found");
+      dispatch(selectSearch(data));
       dispatch(openModal({ type: "movieDetails" }));
     } catch (e) {
       console.log(e.message);
@@ -47,7 +48,7 @@ function MovieGrid({ type }) {
     <>
       <div className="mx-auto">
         <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5">
-          {movies.map((movie) => (
+          {movies.length ? movies.map((movie) => (
             <button
               key={movie.imdbID}
               type="button"
@@ -61,7 +62,11 @@ function MovieGrid({ type }) {
                 className="aspect-[2/3] w-full rounded-md object-cover"
               />
             </button>
-          ))}
+          ))
+            :
+            <p className="text-gray-400
+            ">No Movies in this list.</p>
+        }
         </div>
       </div>
     </>
